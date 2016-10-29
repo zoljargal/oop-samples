@@ -17,11 +17,11 @@ void Student::set_all(char _name[], char _id[], int _level, float _gpa){
     set_gpa(_gpa);
 }
 void Student::set_name(char _name[]){
-    name = new char[sizeof(_name+1)];
+    name = new char[strlen(_name+1)];
     strcpy(name,_name);
 }
 void Student::set_id(char _id[]){
-    id = new char[sizeof(_id+1)];
+    id = new char[strlen(_id+1)];
     strcpy(id,_id);
 }
 void Student::set_level(int _level){
@@ -50,9 +50,9 @@ float Student::get_gpa(){
 }
 
 void Student::stdcopy(Student &s){
-//    name = new char[sizeof(s.get_name())+1];
+//    name = new char[strlen(s.get_name())+1];
 //    strcpy(name,s.get_name());
-//    id = new char[sizeof(s.get_id())+1];
+//    id = new char[strlen(s.get_id())+1];
 //    strcpy(id,s.get_id());
 //    level = s.get_level();
 //    gpa = s.get_gpa();
