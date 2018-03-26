@@ -1,0 +1,108 @@
+# C хэл дээр статик сан (static library) үүсгэх
+
+## Компайл хийх
+g++ компайларыг -c option-той ажиллуулж obj файл үүсгэнэ
+
+    $g++ -o hello.obj -c hello.cpp
+
+Үүссэн файлыг харвал
+    
+    $ls
+    hello.cpp
+    hello.obj
+
+Энд үүссэн obj файл нь эх кодыг машины кодруу хөрвүүлсэн хувилбар бөгөөд өөр программд эх кодгүйгээр шууд ашиглах боломжтой юм. 
+
+## Статик санг өөр программд ашиглах
+Үүсгэсэн статик сан буюу obj файлд бичсэн функц эсвэл классыг өөр программд шууд ашиглаж болно. 
+
+    $g++ -o <program_name> [lib1.obj] [lib2.obj] <another_programm.cpp>
+
+Үүний тулд уг санд ямар функц, класс зарлагдсныг программ бичиж байгаа хүн мэдэхийн тулд толгой файл шаардлагатай болно. 
+
+## Статик сан зохион байгуулах
+Толгой файлд функц эсвэл классыг зарлана. Тухайлбал **math.h** файлд дараах классыг зарлана.
+
+```C++
+#ifndef _STUDENT_H_
+#define _STUDENT_H_
+
+class student{
+private:
+   char* name;
+   float gpa;
+public:
+   student();
+   void set_name(char*);
+   char* get_name();
+   void set_gpa(float);
+   float get_gpa();
+};
+#endif
+```
+
+Харин функцийн тодорхойлолт буюу ямар нэг алгоритмын хэрэгжүүлэлтийг **_student.cpp_** файлд бичнэ. Ингэхдээ уг файлд **__student.h__** толгой файлыг зааж (include) өгнө. 
+
+**_student.cpp_** файл нь: 
+
+```C++
+#include "student.h"
+#include <string.h>
+
+student::student(){
+   set_name("");
+   set_gpa(0);
+}
+
+void student::set_name(char* name){
+   if(this->name)
+      delete this->name;
+   this->name = new char[strlen(name)+1];
+   strcpy(this->name, name);
+}
+
+char* student::get_name(){
+   return this->name;
+}
+
+void student::set_gpa(float gpa){
+   if(gpa>=0 && gpa<=4)
+      this->gpa=gpa;
+}
+float student::get_gpa(){
+   return this->gpa;
+}
+
+```
+
+Сангийн эх кодыг бичсэний дараа өмнө үзсэнчлэн компайл хийж object файл үүсгэнэ. 
+
+    $g++ -o student.obj -c student.cpp
+
+Одоо уг санг өөр программд ашиглахад бидэнд  _**student.cpp**_ файл хэрэггүй бөгөөд _**student.h**_ болон _**student.obj**_ файлууд байхад хангалттай. 
+
+Одоо санг ашигласан программын кодыг **_main.cpp_** файлд бичье. Энэ файлд өмнө үүсгэсэн сангийн классыг ашиглах учир классын зарлалтыг агуулсан _**student.h**_ файлыг зааж өгнө. Харин сангийн хэрэгжүүлэлтийг агуулсан _**student.obj**_ файлыг уг программыг компайлдах үед link хийх шатад ашиглана. Өөрөөр хэлбэл код бичиж байх үед толгой файл, кодыг компайлдах үед машины код нь хэрэг болно.
+ 
+```C++
+#include "student.h"
+#include <iostream>
+using namespace std;
+
+int main(){
+    student s;
+    s.set_name("Дорж");
+    s.set_gpa(3.5);
+    cout<<s.get_name()<<endl;
+    cout<<s.get_gpa();
+}
+```
+Дээрх кодыг дараах коммандаар компайлдана:
+
+    $g++ -o main_programm student.obj main.cpp
+ 
+Ажиллуулахдаа:
+
+    $./main_programm
+    $Дорж
+    $3.5
+
