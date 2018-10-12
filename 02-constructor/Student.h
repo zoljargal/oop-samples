@@ -7,11 +7,12 @@
 
 
 class Student {
+private:
     char* id;
     float gpa=0;
-public:
     char* name;
     int level;
+ public:
     Student(char[], char[], int);
     void set_all(char[], char[], int, float);
     void set_name(char[]);
